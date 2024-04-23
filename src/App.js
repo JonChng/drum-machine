@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './App.css';
 
 
 function App() {
 
+  const [isToggled, setIsToggled] = useState(false);
   const [itemName, setItemName] = useState('');
   const [volume, setVolume] = useState(0.5);
 
@@ -69,8 +70,14 @@ function App() {
     const volume = e.target.value;
     setVolume(volume);
   }
+  
+  const toggleSwitch = () => {
+    setIsToggled(!isToggled);
+  }
 
   const playAudio = (id) => {
+
+    if (isToggled === false) return;
     const audio = document.getElementById(id);
 
     audio.volume = volume;
@@ -83,7 +90,10 @@ function App() {
   };
 
   const handleKeyPress = (e) => {
+    console.log(isToggled)
+    if (isToggled === false) return;
     const audio = document.getElementById(e.key.toUpperCase());
+    console.log(audio)
     if (audio) {
       playAudio(e.key.toUpperCase());
       };
@@ -101,7 +111,16 @@ function App() {
     </div>
   ));
 
-  document.addEventListener("keydown", handleKeyPress);
+  useEffect(() => { 
+    if (isToggled) {
+      document.addEventListener("keydown", handleKeyPress);
+    } else {
+      document.removeEventListener("keydown", handleKeyPress);
+    } return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isToggled]);
+  
   
   return (
     <div className="App flex justify-center items-center h-screen bg-slate-700" id="drum-machine">
@@ -109,7 +128,14 @@ function App() {
         <div className=" p-4 grid grid-cols-3 gap-4 justify-items-center">
           {buttons}
         </div>
-      <div className="h-10 w-3/5 m-auto">
+      <div className="h-10 w-3/5 ml-auto mr-auto">
+        <div className="w-full m-5">
+          <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" onChange={toggleSwitch} checked={isToggled}></input>
+          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div> 
+          <span class="ms-3 text-sm font-medium text-white dark:text-gray-300">Off/On</span>
+          </label>  
+        </div>
 
         <div className="h-10 w-full border border-white border-3 m-auto">
           <h1 id="display" className="mt-2 align-middle text-center text-white">{itemName}</h1>
