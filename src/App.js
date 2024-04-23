@@ -115,7 +115,7 @@ function App() {
           <h1 id="display" className="mt-2 align-middle text-center text-white">{itemName}</h1>
         </div>
         <div className="mt-5">
-          <input class type="range" min="0" max="1" step="0.01" value={volume} onChange={newVolume}></input>
+          <input className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" type="range" min="0" max="1" step="0.01" value={volume} onChange={newVolume}></input>
           <p>Volume: {volume} </p>
         </div>
       </div>
